@@ -1,0 +1,11 @@
+.nav-item {
+    padding-left: 10px;
+}
+.container {
+    margin-top: 20px;
+}
+.cardCenter {
+    margin: 0 auto; 
+    float: none; 
+    margin-bottom: 10px;
+}
