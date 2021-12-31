@@ -10,7 +10,7 @@ include("template/header.php");
     ?>
     <div class="container">
         <div class="d-flex flex-row-reverse">
-            <p>Have Trouble ? <a href="#" class="btn btn-primary">Create Post</a></p>
+            <p>Have Trouble ? <a href="createPost.php" class="btn btn-primary">Create Post</a></p>
         </div>
         <div class="row">
             <div class="col-md-6 p-2">
