@@ -1,5 +1,5 @@
 <?php
-include('./core/config.php');
+include('../core/config.php');
 if (!isset($_SESSION['uid'])) {
     if (isset($_POST['name'])) {
         if ($_POST['surname'] != "" && $_POST['email'] != "" && $_POST['password'] != "") {
