@@ -1,4 +1,8 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 date_default_timezone_set("Asia/Bangkok");
 session_start();
 $CONF = array();
@@ -12,8 +16,10 @@ $connect->setAttribute(PDO::ATTR_EMULATE_PREPARES, FALSE);
 $website = "http://localhost/WebTechnician";
 $partUpload = "http://localhost/WebTechnician/uploads/";
 if(isset($_SESSION['uid'])){
-    $user = $connect->prepare("SELECT * FROM `user` WHERE `id` = ?");
+    $user = $connect->prepare("SELECT * FROM `users` WHERE `id` = ?");
     $user->execute([$_SESSION['uid']]);
     $user = $user->fetch();
 }
+
+include("function.php");
 ?>

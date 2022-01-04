@@ -7,10 +7,14 @@ if (!isset($_SESSION['uid'])) {
             $checkuser = $connect->prepare("SELECT `id` FROM `user` WHERE `email` = ? AND `password` = ?");
             $checkuser->execute([$_POST['email'], $_POST['password']]);
             if ($checkuser->rowCount() != 0) {
+                $getData = $checkuser->fetch();
+                
                 $data = [
                     'status' => 200,
                     'msg' => "success"
                 ];
+                $_SESSION['uid'] = $getData['id'];
+                
                 echo json_encode($data, true);
                 exit();
             }else{
