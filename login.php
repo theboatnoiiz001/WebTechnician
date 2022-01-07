@@ -1,9 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
 <?php
 include("template/header.php");
+if(isset($_SESSION['uid'])){
+    header("location:index.php");
+    exit();
+}
 ?>
-
+<!DOCTYPE html>
+<html lang="en">
 <body>
     <?php
         include("template/nav.php");
@@ -23,7 +26,7 @@ include("template/header.php");
                         <label>Password</label>
                         <input type="password" name="password" id="password" class="form-control">
                         <br>
-                        <input type="submit" class="btn btn-primary" value="Sign in">
+                        <input type="submit" class="btn btn-primary" onClick="login()" value="Sign in">
                     </div>
                 </div>
             </div>

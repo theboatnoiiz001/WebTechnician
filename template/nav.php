@@ -25,12 +25,39 @@
             </li>
         </ul>
         <ul class="navbar-nav ml-md-auto">
+            <?php
+                if(isset($_SESSION['uid'])){
+                    echo'
+                    <li class="nav-item">
+                        <a href="chat.php" class="btn btn-primary text-white">
+                            <i class="fas fa-comment"></i> Chat <span class="badge badge-danger">0</span>
+                        </a>
+                        </li>
+                    <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-user"></i> สวัสดี '.$member['name'].'
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" href="#">ตั่งค่าโปรไฟล์</a>
+                            <a class="dropdown-item" href="#">โพสต์ของฉัน</a>
+                            </div>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="logout.php"><i class="fas fa-sign-out-alt"></i> ออกจากระบบ</a>
+                        </li>
+                        ';
+                }else{
+                    ?>
             <li class="nav-item">
                 <a class="nav-link" href="login.php"><i class="fas fa-sign-in-alt"></i> Login</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="register.php"><i class="fas fa-user-plus"></i> Register</a>
             </li>
+            <?php
+                }
+            ?>
+
         </ul>
     </div>
 </nav>

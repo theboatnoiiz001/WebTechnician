@@ -1,4 +1,5 @@
 <?php
+header('Content-Type: application/json; charset=utf-8');
 include("../core/config.php");
 if (!isset($_SESSION['uid'])) {
     $data = [
@@ -19,6 +20,7 @@ if (isset($_POST['type'])) {
         echo json_encode($data, true);
         exit();
     }
+
     $img = $checkImg->fetch();
     if($_POST['type'] == 1 || $_POST['type'] == 2 || $_POST['type'] == 3){
         $post = $connect->prepare("INSERT INTO `posts`(`user_id`, `topic`, `type`, `provinc`, `address`, `phone`, `detail`, `status`, `tech`, `create_at`, `price`) VALUES (?,?,?,?,?,?,?,?,?,?,?)");

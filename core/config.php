@@ -16,9 +16,9 @@ $connect->setAttribute(PDO::ATTR_EMULATE_PREPARES, FALSE);
 $website = "http://localhost/WebTechnician";
 $partUpload = "http://localhost/WebTechnician/uploads/";
 if(isset($_SESSION['uid'])){
-    $user = $connect->prepare("SELECT * FROM `users` WHERE `id` = ?");
-    $user->execute([$_SESSION['uid']]);
-    $user = $user->fetch();
+    $member = $connect->prepare("SELECT * FROM `users` WHERE `id` = ?");
+    $member->execute([$_SESSION['uid']]);
+    $member = $member->fetch();
 }
 
 include("function.php");
