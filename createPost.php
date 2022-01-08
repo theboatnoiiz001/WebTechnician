@@ -86,7 +86,7 @@ if(!isset($_SESSION['uid'])){
                             </div>
                         </div>
                         <div class="col-md-12 text-center mt-5 mb-2">
-                            <button class="btn btn-primary">Create</button>
+                            <button class="btn btn-primary" onClick="addPost()">Create</button>
                         </div>
                     </div>
                 </div>
@@ -100,6 +100,47 @@ if(!isset($_SESSION['uid'])){
     ?>
 
     <script>
+
+    function addPost(){
+        let topic = $("#topic").val();
+        let type = $("#type").val();
+        let address = $("#address").val();
+        let province = $("#province").val();
+        let phone = $("#phone").val();
+        let details = $("#details").val();
+        let price = $("#price").val();
+
+        if(topic != "" && type != "" && address != "" && province != "" && phone != "" && details != "" && price != ""){
+            $.post("api/addpost.php",{topic:topic,type:type,address:address,province:province,phone:phone,detail:details,price:price},function(data){
+                if(data.status == 200){
+                    Swal.fire(
+                        'Good job!',
+                        data.msg,
+                        'success'
+                    )
+                    setTimeout(function(){
+                        window.location = "./post.php?id="+data.id;
+                    },1000);
+                }else{
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: data.msg,
+                    })
+                    return;
+                }
+            })
+        }else{
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'กรุณากรอกข้อมูลให้ครบถ้วน',
+            })
+            return;
+        }
+        
+    }
+
     function uploadFile(emt) {
         var imagefile = emt.files[0].type;
         var match = ["image/jpeg", "image/png", "image/jpg"];
@@ -131,6 +172,7 @@ if(!isset($_SESSION['uid'])){
     function renderImg(id) {
         return `<img src="<?php echo $website;?>/uploads/${id}.jpg" class="rounded mx-auto d-block mr-1 mb-1" data-action="zoom" height="150px">`;
     }
+
     </script>
 </body>
 

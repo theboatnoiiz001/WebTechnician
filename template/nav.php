@@ -27,10 +27,12 @@
         <ul class="navbar-nav ml-md-auto">
             <?php
                 if(isset($_SESSION['uid'])){
+                    $getReqNav = $connect->prepare("SELECT `id` FROM `work_request` WHERE `user_id` = ? AND `status` = 0");
+                    $getReqNav->execute([$_SESSION['uid']]);
                     echo'
                     <li class="nav-item">
                         <a href="chat.php" class="btn btn-primary text-white">
-                            <i class="fas fa-comment"></i> Chat <span class="badge badge-danger">0</span>
+                            <i class="fas fa-comment"></i> Chat <span class="badge badge-danger">'.$getReqNav->rowCount().'</span>
                         </a>
                         </li>
                     <li class="nav-item dropdown">

@@ -2,12 +2,41 @@
 <html lang="en">
 <?php
 include("template/header.php");
+$dataPost = $connect->prepare("SELECT * FROM `posts` WHERE `idpost` = ?");
+$dataPost->execute([$_GET['id']]);
+$dataPost = $dataPost->fetch();
 ?>
 
 <body>
     <?php
         include("template/nav.php");
     ?>
+    <div class="modal fade" id="sendReq" tabindex="-1" role="dialog"
+        aria-labelledby="sendReq" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">ส่งคำขอซ่อม</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <label>ราคาที่จะเสนอ</label>
+                    <br>
+                    <input id="price" type="number" class="form-control" value="">
+                    <br>
+                    <label>ข้อความที่จะส่งหาคนโพสต์</label>
+                    <br>
+                    <input id="message" type="text" class="form-control" value="">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onClick="iCanFix()">ส่งคำขอ</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="p-4">
         <br>
         <div class="row">
@@ -21,56 +50,54 @@ include("template/header.php");
                                     <div class="card-body">
                                         <label>Image</label>
                                         <div class="row text-left">
-                                            <img src="uploads/mock.jpeg" class="rounded mx-auto d-block mr-1 mb-1"
-                                                data-action="zoom" height="150px">
-                                            <img src="uploads/mock.jpeg" class="rounded mx-auto d-block mr-1 mb-1"
-                                                data-action="zoom" height="150px">
-                                            <img src="uploads/mock.jpeg" class="rounded mx-auto d-block mr-1 mb-1"
-                                                data-action="zoom" height="150px">
-                                            <img src="uploads/mock.jpeg" class="rounded mx-auto d-block mr-1 mb-1"
-                                                data-action="zoom" height="150px">
-                                            <img src="uploads/mock.jpeg" class="rounded mx-auto d-block mr-1 mb-1"
-                                                data-action="zoom" height="150px">
-                                            <img src="uploads/mock.jpeg" class="rounded mx-auto d-block mr-1 mb-1"
-                                                data-action="zoom" height="150px">
-                                            <img src="uploads/mock.jpeg" class="rounded mx-auto d-block mr-1 mb-1"
-                                                data-action="zoom" height="150px">
-                                            <img src="uploads/mock.jpeg" class="rounded mx-auto d-block mr-1 mb-1"
-                                                data-action="zoom" height="150px">
-                                            <img src="uploads/mock.jpeg" class="rounded mx-auto d-block mr-1 mb-1"
-                                                data-action="zoom" height="150px">
-                                            <img src="uploads/mock.jpeg" class="rounded mx-auto d-block mr-1 mb-1"
-                                                data-action="zoom" height="150px">
-                                            <img src="uploads/mock.jpeg" class="rounded mx-auto d-block mr-1 mb-1"
-                                                data-action="zoom" height="150px">
-                                            <img src="uploads/mock.jpeg" class="rounded mx-auto d-block mr-1 mb-1"
-                                                data-action="zoom" height="150px">
+                                            <?php
+                                                $getListImage = $connect->prepare("SELECT * FROM `image_log` WHERE `post_id` = ?");
+                                                $getListImage->execute([$_GET['id']]);
+                                                while($row = $getListImage->fetch()){
+                                                    echo'<img src="uploads/'.$row['name'].'.jpg" class="rounded mx-auto d-block mr-1 mb-1"
+                                                    data-action="zoom" height="150px">';
+                                                }
+                                            ?>
                                         </div>
                                         <br>
-                                        <label>Type: </label><b class="ml-2">Refrigerator</b>
+                                        <label>Type: </label><b
+                                            class="ml-2"><?php echo getTypeFix($dataPost['type']);?></b>
                                         <br>
-                                        <label>Address: </label><b class="ml-2">325/2 หมู่ 5 ถ.เมรี ซ.เมรี 12 ต. บ้านสวน
-                                            อ. เมือง จ. ชลบุรี 20000</b>
+                                        <label>Address: </label><b class="ml-2"><?php echo $dataPost['address'];?></b>
                                         <br>
-                                        <label>Phone: </label><b class="ml-2">+66 8x-xxx-xxxx</b>
+                                        <label>Phone: </label><b class="ml-2"><?php echo $dataPost['phone'];?></b>
                                         <br>
-                                        <label>Details: </label><b class="ml-2">ไฟตู้เย็นกระพริบเป็นช่วงๆ
-                                            เสียบางครั้งก็ไม่เย็น </b>
+                                        <label>Details: </label><b class="ml-2"><?php echo $dataPost['detail'];?></b>
                                         <br>
                                         <br>
-                                        <button class="btn btn-primary">I can Fix!</button>
+                                        <button class="btn btn-primary" data-toggle="modal" data-target="#sendReq">I can Fix!</button>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="card cardCenter">
                                     <div class="card-body">
-                                        <label><strong>Status : <b id="statusFix">On Fixing</b></strong></label>
+                                        <label><strong>Status : <b
+                                                    id="statusFix"><?php echo getStatusType($dataPost['status']);?></b></strong></label>
                                         <br>
                                         <div class="text-center">
-                                            <img src="asset/img/person.png" height="200px">
-                                            <br>
-                                            <p>(Technician Profile)</p>
+                                            <?php
+                                                if($dataPost['status'] != 0){
+                                                    $getTech = $connect->prepare("SELECT * FROM `users` WHERE `id` = ?");
+                                                    $getTech->execute([$dataPost['tech']]);
+                                                    $getTech = $getTech->fetch();
+                                                    if($getTech['profile'] == 0){
+                                                        $imgProfile = "person";
+                                                    }else{
+                                                        $imgProfile = $getTech['profile'];
+                                                    }
+                                                    echo'<a href="profile.php?id='.$getTech['id'].'"><img src="uploads/'.$imgProfile.'.jpg" height="200px">
+                                                    <br>
+                                                    <p>('.$getTech['name'].' '.$getTech['surname'].')</p></a>';
+                                                    echo getRanking($getTech['id'],$connect) . ' ('.$getTech['ranking'].')';
+                                                }
+                                            ?>
+
                                         </div>
                                     </div>
                                 </div>
@@ -78,39 +105,13 @@ include("template/header.php");
                                     <div class="card-body">
                                         <label><strong>Comment</strong></label>
                                         <hr>
-                                        <div class="pl-3">
-                                            <img src="asset/img/person.png" height="50px"> <b class="pl-2">Kittisak
-                                                Ngoasriphai</b>
-                                            <br>
-                                            <p class="pl-4">มันต้องแก่ตรงนั้นนะ</p>
-                                            <hr>
-                                        </div>
-                                        <div class="pl-3">
-                                            <img src="asset/img/person.png" height="50px"> <b class="pl-2">Kittisak
-                                                Ngoasriphai</b>
-                                            <br>
-                                            <p class="pl-4">มันต้องแก่ตรงนั้นนะ</p>
-                                            <hr>
-                                        </div>
-                                        <div class="pl-3">
-                                            <img src="asset/img/person.png" height="50px"> <b class="pl-2">Kittisak
-                                                Ngoasriphai</b>
-                                            <br>
-                                            <p class="pl-4">มันต้องแก่ตรงนั้นนะ</p>
-                                            <hr>
-                                        </div>
-                                        <div class="pl-3">
-                                            <img src="asset/img/person.png" height="50px"> <b class="pl-2">Kittisak
-                                                Ngoasriphai</b>
-                                            <br>
-                                            <p class="pl-4">มันต้องแก่ตรงนั้นนะ</p>
-                                            <hr>
+                                        <div id="listComment">
                                         </div>
                                     </div>
                                     <div id="comment" class="p-4">
                                         <b>Comment</b>
                                         <input type="text" class="form-control" id="commentText">
-                                        <button class="btn btn-primary mt-2">Send</button>
+                                        <button class="btn btn-primary mt-2" onClick="comment()">Send</button>
                                     </div>
                                 </div>
                             </div>
@@ -125,6 +126,76 @@ include("template/header.php");
     <?php
         include("template/footer.php");
     ?>
+    <script>
+    setInterval(getListComment, 1000);
+
+    function comment() {
+        let commentText = $("#commentText").val();
+        let post_id = <?php echo $_GET['id'];?>;
+        if (commentText != "") {
+            $.post("api/comment.php", {
+                post_id: post_id,
+                comment: commentText
+            }, function(data) {
+                if (data.status == 200) {
+                    getListComment();
+                    $("#commentText").val("");
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: data.msg,
+                    })
+                }
+            })
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'กรุณากรอกข้อมูลให้ครบถ้วน',
+            })
+        }
+    }
+
+    function getListComment() {
+        $.get("./api/getComment.php?id=<?php echo $_GET['id'];?>", function(data) {
+            $("#listComment").html(data);
+        })
+    }
+
+    function iCanFix() {
+        let idpost = <?php echo $_GET['id'];?>;
+        let price = $("#price").val();
+        let message = $("#message").val();
+        if(price != "" && message != ""){
+            $.post("api/iconfix.php",{idpost:idpost,price:price,message:message},function(data){
+                if(data.status == 200){
+                    Swal.fire(
+                        'Good job!',
+                        data.msg,
+                        'success'
+                    )
+                    setTimeout(function(){
+                        location.reload();
+                    },1000);
+                }else{
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: data.msg,
+                    })
+                }
+            })
+        }else{
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'กรุณากรอกข้อมูลให้ครบถ้วน',
+            })
+        }
+        
+    }
+    </script>
 </body>
 
 </html>

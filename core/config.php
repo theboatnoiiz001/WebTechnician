@@ -21,5 +21,49 @@ if(isset($_SESSION['uid'])){
     $member = $member->fetch();
 }
 
-include("function.php");
+function getTypeFix($id){
+    if($id == 1){
+        return "Air condition";
+    }else if($id == 2){
+        return "Refrigerator";
+    }else if($id == 3){
+        return "Drain pipe";
+    }else if($id == 4){
+        return "Shower";
+    }else if($id == 5){
+        return "Unknow";
+    }else{
+        return "Unknow";
+    }
+}
+
+function getRanking($id,$connect){
+    
+    $getTech = $connect->prepare("SELECT * FROM `users` WHERE `id` = ?");
+    $getTech->execute([$id]);
+    $getTech = $getTech->fetch();
+
+    $ranking = floor($getTech['ranking']);
+    $star = "";
+
+    for($i=0;$i<5;$i++){
+        if($ranking > 0){
+            $star = $star.'<i class="fas fa-star checked"></i>';
+        }else{
+            $star = $star.'<i class="fas fa-star"></i>';
+        }
+        $ranking--;
+    }
+    return $star;
+
+}
+function getStatusType($id){
+    if($id == 0){
+        return "Find a Technician";
+    }else if($id == 1){
+        return "On Fixing";
+    }else if($id == 2){
+        return "Finish";
+    }
+}
 ?>
