@@ -38,11 +38,34 @@ if(!isset($_SESSION['uid'])){
                             </div>
                             <div class='tab-pane container fade' id='s2'>
                                 <?php
-                                    $getReqAll = $connect->prepare("SELECT * FROM `work_request` WHERE `user_id` = ? AND `status` = 0");
+                                    if($member['role'] == "member"){
+                                    $getReqAll = $connect->prepare("SELECT * FROM `work_request` WHERE `user_id` = ? AND `status` = 0 AND `post_id` != -1");
                                     $getReqAll->execute([$_SESSION['uid']]);
                                     while($row = $getReqAll->fetch()){
                                         $getTech = $connect->prepare("SELECT * FROM `users` WHERE `id` = ?");
                                         $getTech->execute([$row['tech']]);
+                                        $getTech = $getTech->fetch();
+                                        ?>
+                                        <div class="card border-danger m-3">
+                                            <div class="card-header border-danger"><?php echo $getTech['name'].' '.$getTech['surname'];?> (<?php echo $row['create_at'];?>)</div>
+                                            <div class="card-body">
+                                                <img src="uploads/<?php echo $getTech['profile'];?>.jpg" height="50px" class="mr-2">
+                                                <?php echo $row['message'];?>
+                                                <br>
+                                                ขอเสนอราคาที่ : <?php echo $row['price'];?>บาท
+                                                <hr>
+                                                <button class="btn btn-success" onClick="agreeThis(<?php echo $row['id'];?>)">อณุมัติ</button>
+                                                <button class="btn btn-danger" onClick="deleteThis(<?php echo $row['id'];?>)">ไม่สนใจ</button>
+                                            </div>
+                                        </div>
+                                <?php
+                                    }
+                                }else{
+                                    $getReqAll = $connect->prepare("SELECT * FROM `work_request` WHERE `tech` = ? AND `post_id` = -1 AND `status` = 0");
+                                    $getReqAll->execute([$_SESSION['uid']]);
+                                    while($row = $getReqAll->fetch()){
+                                        $getTech = $connect->prepare("SELECT * FROM `users` WHERE `id` = ?");
+                                        $getTech->execute([$row['user_id']]);
                                         $getTech = $getTech->fetch();
                                         ?>
                                         <div class="card border-danger m-3">
@@ -59,6 +82,7 @@ if(!isset($_SESSION['uid'])){
                                         </div>
                                 <?php
                                     }
+                                }
                                 ?>
 
                             </div>
@@ -86,7 +110,7 @@ if(!isset($_SESSION['uid'])){
                 $getDataReq->execute([$getDataChat['request_id']]);
                 $getDataReq = $getDataReq->fetch();
 
-                if($getDataReq['post_id'] == 0){
+                if($getDataReq['post_id'] == -1){
                     $showDetail = false;
                 }else{
                     $showDetail = true;
@@ -109,8 +133,8 @@ if(!isset($_SESSION['uid'])){
                             <p>ติดต่อจากโพสต์: <a href="post.php?id=<?php echo $dataPost['idpost'];?>"><?php echo $dataPost['topic'];?></a>
                             </p>
                             <?php
-                                if($dataPost['tech'] != $_SESSION['uid']){
-                                    echo '<button class="btn btn-success">งานเสร็จแล้ว</button>';
+                                if($dataPost['tech'] != $_SESSION['uid'] && $getDataChat['status'] != 2){
+                                    echo '<button class="btn btn-success" onClick="successWork('.$_GET['id'].')">งานเสร็จแล้ว</button>';
                                 }
                             ?>
                             
@@ -147,7 +171,7 @@ if(!isset($_SESSION['uid'])){
         $('#bodyChat').animate({
             scrollTop: $('#bodyChat')[0].scrollHeight
         }, 500);
-    }, 2000)
+    }, 300)
 
     setInterval(getListChat, 500);
     setInterval(getMessageChat, 500);
@@ -172,6 +196,7 @@ if(!isset($_SESSION['uid'])){
         })
 
     }
+    
 
     function getListChat() {
         $.get("./api/getChatAll.php", function(data) {
@@ -182,7 +207,24 @@ if(!isset($_SESSION['uid'])){
 
 
     function deleteThis(id){
-        console.log("ignoreThis " + id)
+        $.post("api/delReq.php",{req_id:id},function(data){
+            if(data.status == 200){
+                Swal.fire(
+                    'Good job!',
+                    data.msg,
+                    'success'
+                )
+                setTimeout(function(){
+                    location.reload();
+                },1000);
+            }else{
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: data.msg,
+                  })
+            }
+        })
     }
 
     
@@ -211,10 +253,38 @@ if(!isset($_SESSION['uid'])){
                     })
                 }
             }
+
+            $('#chatText').keyup(function(e){
+                if(e.keyCode == 13)
+                {
+                    sendMessage();
+                }
+            });
+
             function getMessageChat() {
                 $.get("./api/getMessageChat.php?id=<?php echo $_GET['id'];?>", function(data) {
                     $("#bodyChat").html(data);
                 })
+            }
+            function successWork(id){
+                $.post("api/workSuccess.php",{chatid:id},function(data){
+                if(data.status == 200){
+                    Swal.fire(
+                        'Good job!',
+                        data.msg,
+                        'success'
+                    )
+                    setTimeout(function(){
+                        window.location = "./review.php?id=" + data.postsid;
+                    },1000);
+                }else{
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: data.msg,
+                    })
+                }
+            })
             }
     <?php
     }

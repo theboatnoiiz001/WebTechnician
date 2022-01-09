@@ -170,7 +170,7 @@ if(!isset($_SESSION['uid'])){
     }
 
     function renderImg(id) {
-        return `<img src="<?php echo $website;?>/uploads/${id}.jpg" class="rounded mx-auto d-block mr-1 mb-1" data-action="zoom" height="150px">`;
+        return `<img src="<?php echo $website;?>/uploads/${id}.jpg" class="rounded" data-action="zoom" height="150px">`;
     }
 
     </script>

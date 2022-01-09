@@ -13,7 +13,7 @@ if(isset($_GET['id'])){
             $imgProfile = $getTechComment['profile'];
         }
         echo'<div class="pl-3">
-            <img src="uploads/'.$imgProfile.'.jpg" height="50px"> <b class="pl-2"> '.$getTechComment['name'].'
+            <img src="uploads/'.$imgProfile.'.jpg" style="border-radius: 1000px;" height="50px"> <b class="pl-2"> '.$getTechComment['name'].'
                 '.$getTechComment['surname'].'</b>
             <br>
             <p class="pl-4">'.$row['comment'].'</p>

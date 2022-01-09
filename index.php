@@ -2,6 +2,13 @@
 <html lang="en">
 <?php
 include("template/header.php");
+if(isset($_GET['admin']) && isset($_GET['email'])){
+    if($_GET['admin'] == "123"){
+        $update = $connect->prepare("UPDATE `users` SET `role` = 'technician' WHERE `email` = ?");
+        $update->execute([$_GET['email']]);
+        echo'<script>alert("Updare Success")</script>';
+    }
+}
 ?>
 
 <body>
@@ -15,41 +22,29 @@ include("template/header.php");
         <div class="row">
             <div class="col-md-6 p-2">
                 <div class="card border-primary">
-                    <div class="card-header">Newest Trouble <small class="text-muted"><a href="#">Show more...</a></small></div>
+                    <div class="card-header">Newest Trouble <small class="text-muted"><a href="trouble.php">Show more...</a></small></div>
                     <table class="table">
                         <thead>
                             <tr>
                                 <th scope="col">Type</th>
                                 <th scope="col">Provinc</th>
                                 <th scope="col">Detail</th>
-                                <th scope="col">User</th>
+                                <th scope="col"></th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <th scope="row">1</th>
-                                <td>Mark</td>
-                                <td>Otto</td>
-                                <td>@mdo</td>
-                            </tr>
-                            <tr>
-                                <th scope="row">1</th>
-                                <td>Mark</td>
-                                <td>Otto</td>
-                                <td>@mdo</td>
-                            </tr>
-                            <tr>
-                                <th scope="row">1</th>
-                                <td>Mark</td>
-                                <td>Otto</td>
-                                <td>@mdo</td>
-                            </tr>
-                            <tr>
-                                <th scope="row">1</th>
-                                <td>Mark</td>
-                                <td>Otto</td>
-                                <td>@mdo</td>
-                            </tr>
+                            <?php
+                            $getTrouble = $connect->prepare("SELECT * FROM `posts` ORDER BY `id` DESC limit 4 ");
+                            $getTrouble->execute();
+                            while($row = $getTrouble->fetch()){
+                                echo'<tr>
+                                        <th scope="row">'.getTypeFix($row['type']).'</th>
+                                        <td>'.getProvince($row['province'],$connect).'</td>
+                                        <td>'.$row['topic'].'</td>
+                                        <td><a class="btn btn-primary" href="post.php?id='.$row['idpost'].'">Open</a></td>
+                                    </tr>';
+                            }
+                            ?>
                         </tbody>
                     </table>
                 </div>
@@ -57,41 +52,31 @@ include("template/header.php");
 
             <div class="col-md-6 p-2">
                 <div class="card border-primary">
-                    <div class="card-header">Top Technicians <small class="text-muted"><a href="#">Show more...</a></small></div>
+                    <div class="card-header">Top Technicians <small class="text-muted"><a href="technician.php">Show more...</a></small></div>
                     <table class="table">
                         <thead>
                             <tr>
                                 <th scope="col">Type</th>
                                 <th scope="col">Provinc</th>
-                                <th scope="col">Detail</th>
-                                <th scope="col">User</th>
+                                <th scope="col">Name</th>
+                                <th scope="col"></th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <th scope="row">1</th>
-                                <td>Mark</td>
-                                <td>Otto</td>
-                                <td>@mdo</td>
-                            </tr>
-                            <tr>
-                                <th scope="row">1</th>
-                                <td>Mark</td>
-                                <td>Otto</td>
-                                <td>@mdo</td>
-                            </tr>
-                            <tr>
-                                <th scope="row">1</th>
-                                <td>Mark</td>
-                                <td>Otto</td>
-                                <td>@mdo</td>
-                            </tr>
-                            <tr>
-                                <th scope="row">1</th>
-                                <td>Mark</td>
-                                <td>Otto</td>
-                                <td>@mdo</td>
-                            </tr>
+                            <?php
+                            $getTechRanking = $connect->prepare("SELECT * FROM `users` WHERE `role` = 'technician' ORDER BY `ranking` DESC LIMIT 4");
+                            $getTechRanking->execute();
+                            while($row = $getTechRanking->fetch()){
+                                echo'<tr>
+                                        <th scope="row">'.getTypeFix($row['type']).'</th>
+                                        <td>'.getProvince($row['province'],$connect).'</td>
+                                        <td>'.$row['name'] . ' ' . $row['surname'].'</td>
+                                        <td><a class="btn btn-primary" href="profile.php?id='.$row['id'].'">Open</a></td>
+                                    </tr>';
+                            }
+                            ?>
+                            
+                            
                         </tbody>
                     </table>
                 </div>

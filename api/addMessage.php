@@ -12,7 +12,10 @@ if (!isset($_SESSION['uid'])) {
 if (isset($_POST['message'])) {
 
     $addChat = $connect->prepare("INSERT INTO `chat_log`(`user_id`, `message`, `chat_id`, `time_send`) VALUES (?,?,?,?)");
-    $addChat->execute([$_SESSION['uid'],$_POST['message'],$_POST['chatid'],date("Y-m-d h:i:s")]);    
+    $addChat->execute([$_SESSION['uid'],$_POST['message'],$_POST['chatid'],date("Y-m-d H:i:s")]);    
+    
+    $updateDate = $connect->prepare("UPDATE `chat_id` SET `created_at` = ? WHERE `id` = ?");
+    $updateDate->execute([date("Y-m-d H:i:s"),$_POST['chatid']]);
     $data = [
         "status" => 200
     ];

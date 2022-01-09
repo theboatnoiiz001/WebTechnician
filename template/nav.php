@@ -18,17 +18,25 @@
                 <a class="nav-link" href="technician.php"><i class="fas fa-users-cog"></i> Technicians</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="history.php"><i class="fas fa-history"></i> History</a>
-            </li>
-            <li class="nav-item">
                 <a class="nav-link" href="about.php"><i class="fas fa-address-card"></i> About us</a>
             </li>
         </ul>
         <ul class="navbar-nav ml-md-auto">
             <?php
                 if(isset($_SESSION['uid'])){
-                    $getReqNav = $connect->prepare("SELECT `id` FROM `work_request` WHERE `user_id` = ? AND `status` = 0");
-                    $getReqNav->execute([$_SESSION['uid']]);
+                    
+                    if($member['role'] == "member"){
+                        $getReqNav = $connect->prepare("SELECT `id` FROM `work_request` WHERE `user_id` = ? AND `status` = 0 AND `post_id` != -1");
+                        $getReqNav->execute([$_SESSION['uid']]);
+                    }else{
+                        $getReqNav = $connect->prepare("SELECT `id` FROM `work_request` WHERE `tech` = ? AND `post_id` = -1 AND `status` = 0");
+                        $getReqNav->execute([$_SESSION['uid']]);
+                    }
+                    if($member['role'] == "technician"){
+                        $settingProfile = '<a class="dropdown-item" href="profile.php?id='.$_SESSION['uid'].'">โปรไฟล์ฉัน</a><a class="dropdown-item" href="updateProfile.php">ตั่งค่าโปรไฟล์</a>';
+                    }else{
+                        $settingProfile = '<a class="dropdown-item" href="myPost.php">โพสต์ของฉัน</a>';
+                    }
                     echo'
                     <li class="nav-item">
                         <a href="chat.php" class="btn btn-primary text-white">
@@ -40,8 +48,7 @@
                                 <i class="fas fa-user"></i> สวัสดี '.$member['name'].'
                             </a>
                             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item" href="#">ตั่งค่าโปรไฟล์</a>
-                            <a class="dropdown-item" href="#">โพสต์ของฉัน</a>
+                                '.$settingProfile.'
                             </div>
                         </li>
                         <li class="nav-item">

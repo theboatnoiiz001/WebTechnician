@@ -17,8 +17,8 @@ if(isset($_FILES['file']['name'])){
 	$file_extension = strtolower($file_extension);
 	if(in_array($file_extension,$valid_ext)){
         compressImage($_FILES['file']['tmp_name'],$target_path,60);
-		$addData = $connect->prepare("INSERT INTO `image_log`(`user_id`, `post_id`, `name`, `status`, `created_at`) VALUES (?,?,?,?,?)");
-		$addData->execute([$_SESSION['uid'],$_SESSION['idpost'],$name,0,date("Y-m-d H:i:s")]);
+		$addData = $connect->prepare("UPDATE `users` SET `profile` = ? WHERE `id` = ?");
+		$addData->execute([$name,$_SESSION['uid']]);
 		echo $name;
     }else{
         echo "InvalidFileType";

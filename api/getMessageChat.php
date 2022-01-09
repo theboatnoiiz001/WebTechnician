@@ -29,8 +29,15 @@ while($row = $getChat->fetch()){
                     '.$row['message'].'
                 </div>
             </div>';
+    }else if($row['user_id'] == -1){
+        echo'<div class="card mt-3 col-md-12 border-success">
+                <div class="card-body text-center">
+                    <img src="asset/img/service.png" height="50px" class="mr-2">
+                    '.$row['message'].'
+                </div>
+            </div>';
     }else{
-        echo'<div class="card m-3 col-md-12">
+        echo'<div class="card mt-3 col-md-12">
                 <div class="card-body">
                     <img src="uploads/'.$getUser2['profile'].'.jpg" height="50px" class="mr-2">
                     '.$row['message'].'

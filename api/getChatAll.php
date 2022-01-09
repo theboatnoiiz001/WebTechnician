@@ -21,9 +21,14 @@ while($row = $getAllChat->fetch()){
         $getLastChat = $getLastChat->fetch();
         $message = $getLastChat['message'];
     }
+    if($row['status'] == 2){
+        $border = "success";
+    }else{
+        $border = "danger";
+    }
     echo'<a href="chat.php?id='.$row['id'].'" style="text-decoration:none;color:black;">
-            <div class="card border-danger m-3">
-                <div class="card-header border-danger">'.$getDataChat2['name'].' '.$getDataChat2['surname'].'</div>
+            <div class="card border-'.$border.' m-3">
+                <div class="card-header bg-'.$border.' text-white">'.$getDataChat2['name'].' '.$getDataChat2['surname'].'</div>
                 <div class="card-body">
                     <img src="uploads/'.$getDataChat2['profile'].'.jpg" height="50px" class="mr-2">
                     '.$message.'

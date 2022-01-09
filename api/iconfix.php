@@ -26,7 +26,7 @@ if($member['role'] == "technician"){
     $checkReq->execute([$_POST['idpost'],$_SESSION['uid']]);
     if($checkReq->rowCount() == 0){
         $addReq = $connect->prepare("INSERT INTO `work_request`(`post_id`, `tech`, `user_id`, `price`, `message`, `status`,`create_at`) VALUES (?,?,?,?,?,?,?)");
-        $addReq->execute([$_POST['idpost'],$_SESSION['uid'],$getDataPost['user_id'],$_POST['price'],$_POST['message'],0,date("Y-m-d h:i:s")]);
+        $addReq->execute([$_POST['idpost'],$_SESSION['uid'],$getDataPost['user_id'],$_POST['price'],$_POST['message'],0,date("Y-m-d H:i:s")]);
         $data = [
             'status' => 200,
             'msg' => "ส่งคำขอสำเร็จ!"

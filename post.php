@@ -2,6 +2,10 @@
 <html lang="en">
 <?php
 include("template/header.php");
+if(!isset($_GET['id'])){
+    header("location:index.php");
+    exit();
+}
 $dataPost = $connect->prepare("SELECT * FROM `posts` WHERE `idpost` = ?");
 $dataPost->execute([$_GET['id']]);
 $dataPost = $dataPost->fetch();
@@ -11,8 +15,7 @@ $dataPost = $dataPost->fetch();
     <?php
         include("template/nav.php");
     ?>
-    <div class="modal fade" id="sendReq" tabindex="-1" role="dialog"
-        aria-labelledby="sendReq" aria-hidden="true">
+    <div class="modal fade" id="sendReq" tabindex="-1" role="dialog" aria-labelledby="sendReq" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -69,8 +72,45 @@ $dataPost = $dataPost->fetch();
                                         <br>
                                         <label>Details: </label><b class="ml-2"><?php echo $dataPost['detail'];?></b>
                                         <br>
+                                        <label>Price: </label><b class="ml-2"><?php echo getPrice($dataPost['price']);?> บาท</b>
                                         <br>
-                                        <button class="btn btn-primary" data-toggle="modal" data-target="#sendReq">I can Fix!</button>
+                                        <br>
+                                        <?php
+                                            if($dataPost['status'] == 0){
+                                                echo'<button class="btn btn-primary" data-toggle="modal" data-target="#sendReq">I can
+                                                Fix!</button>';
+                                            }
+                                        ?>
+
+                                        <?php
+                                        $checkReview = $connect->prepare("SELECT * FROM `review` WHERE `post_id` = ?");
+                                        $checkReview->execute([$_GET['id']]);
+                                        if($checkReview->rowCount() != 0){
+                                        $getDataStar = $checkReview->fetch();
+                                        ?>
+                                        <div class="col-md-12">
+                                            <div class="card cardCenter border-success">
+                                                <div class="card-header border-success" text-center">
+                                                    การแสดงความคิดเห็นงานนี้</div>
+                                                <div class="card-body">
+                                                    <label>การประสานงานของช่อง : <?php echo getStar($getDataStar['q1']);?></label>
+                                                    <hr>
+                                                    <label>การอำนวยความสะดวกของช่าง : <?php echo getStar($getDataStar['q2']);?></label>
+                                                    <hr>
+                                                    <label>การบริการของช่อง : <?php echo getStar($getDataStar['q3']);?></label>
+                                                    <hr>
+                                                    <label>การให้คำแนะนำของช่าง : <?php echo getStar($getDataStar['q4']);?></label>
+                                                    <hr>
+                                                    <label>การให้คำแนะนำของช่าง : <?php echo getStar($getDataStar['q5']);?></label>
+                                                    <hr>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <?php
+                                        }
+                                        ?>
+
+
                                     </div>
                                 </div>
                             </div>
@@ -91,7 +131,7 @@ $dataPost = $dataPost->fetch();
                                                     }else{
                                                         $imgProfile = $getTech['profile'];
                                                     }
-                                                    echo'<a href="profile.php?id='.$getTech['id'].'"><img src="uploads/'.$imgProfile.'.jpg" height="200px">
+                                                    echo'<a href="profile.php?id='.$getTech['id'].'"><img src="uploads/'.$imgProfile.'.jpg" style="border-radius: 1000px;" height="150px">
                                                     <br>
                                                     <p>('.$getTech['name'].' '.$getTech['surname'].')</p></a>';
                                                     echo getRanking($getTech['id'],$connect) . ' ('.$getTech['ranking'].')';
@@ -128,6 +168,12 @@ $dataPost = $dataPost->fetch();
     ?>
     <script>
     setInterval(getListComment, 1000);
+
+    $('#commentText').keyup(function(e) {
+        if (e.keyCode == 13) {
+            comment();
+        }
+    });
 
     function comment() {
         let commentText = $("#commentText").val();
@@ -167,18 +213,22 @@ $dataPost = $dataPost->fetch();
         let idpost = <?php echo $_GET['id'];?>;
         let price = $("#price").val();
         let message = $("#message").val();
-        if(price != "" && message != ""){
-            $.post("api/iconfix.php",{idpost:idpost,price:price,message:message},function(data){
-                if(data.status == 200){
+        if (price != "" && message != "") {
+            $.post("api/iconfix.php", {
+                idpost: idpost,
+                price: price,
+                message: message
+            }, function(data) {
+                if (data.status == 200) {
                     Swal.fire(
                         'Good job!',
                         data.msg,
                         'success'
                     )
-                    setTimeout(function(){
+                    setTimeout(function() {
                         location.reload();
-                    },1000);
-                }else{
+                    }, 1000);
+                } else {
                     Swal.fire({
                         icon: 'error',
                         title: 'Oops...',
@@ -186,14 +236,14 @@ $dataPost = $dataPost->fetch();
                     })
                 }
             })
-        }else{
+        } else {
             Swal.fire({
                 icon: 'error',
                 title: 'Oops...',
                 text: 'กรุณากรอกข้อมูลให้ครบถ้วน',
             })
         }
-        
+
     }
     </script>
 </body>

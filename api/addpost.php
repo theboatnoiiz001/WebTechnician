@@ -24,7 +24,7 @@ if (isset($_POST['type'])) {
     $img = $checkImg->fetch();
     if($_POST['topic'] != ""){
         $post = $connect->prepare("INSERT INTO `posts`(`user_id`, `topic`, `type`, `province`, `address`, `phone`, `detail`, `status`, `tech`, `create_at`, `price`,`idpost`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)");
-        $post->execute([$_SESSION['uid'],$_POST['topic'],$_POST['type'],$_POST['province'],$_POST['address'],$_POST['phone'],$_POST['detail'],0,0,date("Y-m-d h:i:s"),$_POST['price'],$_SESSION['idpost']]);
+        $post->execute([$_SESSION['uid'],$_POST['topic'],$_POST['type'],$_POST['province'],$_POST['address'],$_POST['phone'],$_POST['detail'],0,0,date("Y-m-d H:i:s"),$_POST['price'],$_SESSION['idpost']]);
         
         $updateImg = $connect->prepare("UPDATE `image_log` SET `status` = 1 WHERE `user_id` = ? AND `post_id` = ?");
         $updateImg->execute([$_SESSION['uid'],$_SESSION['idpost']]);

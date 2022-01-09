@@ -21,6 +21,14 @@ if(isset($_SESSION['uid'])){
     $member = $member->fetch();
 }
 
+function getProvince($id,$connect){
+    $province = $connect->prepare("SELECT `name_en` FROM `provinces` WHERE `code` = ?");
+    $province->execute([$id]);
+    $province = $province->fetch();
+
+    return $province['name_en'];
+}
+
 function getTypeFix($id){
     if($id == 1){
         return "Air condition";
@@ -57,13 +65,52 @@ function getRanking($id,$connect){
     return $star;
 
 }
+
+function getStar($number){
+    
+    $ranking = floor($number);
+    $star = "";
+
+    for($i=0;$i<5;$i++){
+        if($ranking > 0){
+            $star = $star.'<i class="fas fa-star checked"></i>';
+        }else{
+            $star = $star.'<i class="fas fa-star"></i>';
+        }
+        $ranking--;
+    }
+    return $star . ' ('.$number.'/5)';
+
+}
+
+function getPrice($id){
+    if($id == 1){
+        return "1,000-1,999";
+    }else if($id == 2){
+        return "2,000-4,999";
+    }else if($id == 3){
+        return "5,000+";
+    }
+}
+
 function getStatusType($id){
     if($id == 0){
         return "Find a Technician";
     }else if($id == 1){
         return "On Fixing";
     }else if($id == 2){
-        return "Finish";
+        return "Trouble Fixed";
     }
 }
+
+function getStatusTech($id){
+    if($id == 1){
+        return "Work Finding";
+    }else if($id == 2){
+        return "On Working";
+    }else if($id == 3){
+        return "Unavailable";
+    }
+}
+
 ?>

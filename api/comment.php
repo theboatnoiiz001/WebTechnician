@@ -27,7 +27,7 @@ if ($ckpost->rowCount() != 0) {
     $checkComment->execute([$_SESSION['uid']]);
     if($checkComment->rowCount() == 0){
             $addComment = $connect->prepare("INSERT INTO `comments`(`user_id`, `post_id`, `comment`, `create_at`) VALUES (?,?,?,?)");
-            $addComment->execute([$_SESSION['uid'], $_POST['post_id'], $_POST['comment'], date("Y-m-d h:i:s")]);
+            $addComment->execute([$_SESSION['uid'], $_POST['post_id'], $_POST['comment'], date("Y-m-d H:i:s")]);
             $data = [
                 "status" => 200,
                 "msg" => 'คอมเม้นสำเร็จ'
@@ -38,7 +38,7 @@ if ($ckpost->rowCount() != 0) {
         $timeComment = $checkComment->fetch();
         if ((time() - strtotime($timeComment['create_at'])) > 30) {
             $addComment = $connect->prepare("INSERT INTO `comments`(`user_id`, `post_id`, `comment`, `create_at`) VALUES (?,?,?,?)");
-            $addComment->execute([$_SESSION['uid'], $_POST['post_id'], $_POST['comment'], date("Y-m-d h:i:s")]);
+            $addComment->execute([$_SESSION['uid'], $_POST['post_id'], $_POST['comment'], date("Y-m-d H:i:s")]);
             $data = [
                 "status" => 200,
                 "msg" => 'คอมเม้นสำเร็จ'
