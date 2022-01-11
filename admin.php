@@ -40,7 +40,7 @@ if(!isset($_SESSION['uid'])){
                                         $member->execute([$row['user_id']]);
                                         $member = $member->fetch();
                                         echo'<tr>
-                                                <th scope="row">'.$member['name'].' ' .$member['surname'].'</th>
+                                                <th scope="row"><a href="profile.php?id='.$member['id'].'" target="_blank">'.$member['name'].' ' .$member['surname'].'</a></th>
                                                 <td>'.getTypeTech($row['type_work']).'</td>
                                                 <td>'.$row['comment'].'</td>
                                                 <td>'.$row['created_at'].'</td>
