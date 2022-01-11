@@ -93,6 +93,7 @@ function getPrice($id){
     }
 }
 
+
 function getStatusType($id){
     if($id == 0){
         return "Find a Technician";
@@ -103,6 +104,18 @@ function getStatusType($id){
     }
 }
 
+function getTypeTech($id){
+    if($id == 1){
+        return "Air condition";
+    }else if($id == 2){
+        return "Refrigerator";
+    }else if($id == 3){
+        return "Drain pipe";
+    }else if($id == 4){
+        return "Shower";
+    }
+}
+
 function getStatusTech($id){
     if($id == 1){
         return "Work Finding";
@@ -110,6 +123,16 @@ function getStatusTech($id){
         return "On Working";
     }else if($id == 3){
         return "Unavailable";
+    }
+}
+
+function getStatusRegister($id){
+    if($id == 0){
+        return "<b class='text-warning'>Checking</b>";
+    }else if($id == 1){
+        return "<b class='text-success'>Approve</b>";
+    }else if($id == 2){
+        return "<b class='text-danger'>Reject</b>";
     }
 }
 

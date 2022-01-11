@@ -56,14 +56,23 @@ if(!isset($_GET['id'])){
         <div class="text-center">
             <h3>Profile</h3>
             <br>
-            <img src="uploads/<?php echo $dataProfile['profile']?>.jpg" style="border-radius: 1000px;" data-action="zoom" height="200px">
+            <img src="uploads/<?php echo $dataProfile['profile']?>.jpg" style="border-radius: 1000px;"
+                data-action="zoom" height="200px">
             <br><br>
             <b>
                 <h4><?php echo $dataProfile['name'] . ' ' . $dataProfile['surname']?></h4>
             </b>
-            <?php echo getRanking($dataProfile['id'],$connect) . ' (' . $dataProfile['ranking'].'/5)';?>
+            <?php
+            if($dataProfile['role'] != "member"){
+                echo getRanking($dataProfile['id'],$connect) . ' (' . $dataProfile['ranking'].'/5)'.'<br> Status: <b>'. getStatusTech($dataProfile['status']) .'</b>';
+                ?>
             <hr>
-            <button class="btn btn-primary" data-toggle="modal" data-target="#sendReq"><i class="fas fa-paper-plane"></i> ติดต่อช่าง</button>
+            <button class="btn btn-primary" data-toggle="modal" data-target="#sendReq"><i
+                    class="fas fa-paper-plane"></i> ติดต่อช่าง</button>
+            <?php
+            }
+            ?>
+
         </div>
         <br>
         <div class="row">
@@ -112,7 +121,7 @@ if(!isset($_GET['id'])){
                     <div class="card-header bg-primary text-white text-center">Contact</div>
                     <div class="card-body">
                         <div class="mt-4" style="padding-left:20px;">
-                                <?php
+                            <?php
                                     if($status){
                                         echo'<i class="fas fa-phone-volume"></i> <b>'.$dataDetail['phone'].'</b><br>
                                             <i class="fas fa-envelope" style="margin-top:20px;"></i> <b>'.$dataDetail['facebook'].'</b><br>
@@ -122,7 +131,7 @@ if(!isset($_GET['id'])){
                                         echo'ยังไม่มีข้อมูลติดต่อ';
                                     }
                                 ?>
-                            
+
 
                         </div>
                     </div>
@@ -131,7 +140,7 @@ if(!isset($_GET['id'])){
             </div>
             <div class="col-md-12 p-2">
                 <div class="card border-primary">
-                    <div class="card-header">History</div>
+                    <div class="card-header"><?php echo ($dataProfile['role']=="member") ? "ประวัติการโพสต์":"ประวัติการซ่อม";?></div>
                     <div class="card-body">
                         <table class="table">
                             <thead>
@@ -146,7 +155,8 @@ if(!isset($_GET['id'])){
                             </thead>
                             <tbody>
                                 <?php
-                                    $getHistory = $connect->prepare("SELECT * FROM `posts` WHERE `tech` = ? ORDER BY `id` DESC");
+                                    $sql = ($member['role']=="member") ? "SELECT * FROM `posts` WHERE `user_id` = ? ORDER BY `id` DESC" : "SELECT * FROM `posts` WHERE `tech` = ? ORDER BY `id` DESC";
+                                    $getHistory = $connect->prepare($sql);
                                     $getHistory->execute([$_GET['id']]);
                                     while($row = $getHistory->fetch()){
                                         
@@ -160,7 +170,7 @@ if(!isset($_GET['id'])){
                                             </tr>';
                                     }
                                 ?>
-                                
+
                             </tbody>
                         </table>
                     </div>
@@ -173,42 +183,42 @@ if(!isset($_GET['id'])){
         include("template/footer.php");
     ?>
     <script>
-        function sendReq(){
-            let tech = <?php echo $_GET['id'];?>;
-            let price = $("#price").val();
-            let message = $("#message").val();
+    function sendReq() {
+        let tech = <?php echo $_GET['id'];?>;
+        let price = $("#price").val();
+        let message = $("#message").val();
 
-            if (price != "" && message != "") {
-                $.post("api/sendReqToTech.php", {
-                    tech: tech,
-                    price: price,
-                    message: message
-                }, function(data) {
-                    if (data.status == 200) {
-                        Swal.fire(
-                            'Good job!',
-                            data.msg,
-                            'success'
-                        )
-                        setTimeout(function() {
-                            location.reload();
-                        }, 1000);
-                    } else {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Oops...',
-                            text: data.msg,
-                        })
-                    }
-                })
-            } else {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Oops...',
-                    text: 'กรุณากรอกข้อมูลให้ครบถ้วน',
-                })
-            }
+        if (price != "" && message != "") {
+            $.post("api/sendReqToTech.php", {
+                tech: tech,
+                price: price,
+                message: message
+            }, function(data) {
+                if (data.status == 200) {
+                    Swal.fire(
+                        'Good job!',
+                        data.msg,
+                        'success'
+                    )
+                    setTimeout(function() {
+                        location.reload();
+                    }, 1000);
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: data.msg,
+                    })
+                }
+            })
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'กรุณากรอกข้อมูลให้ครบถ้วน',
+            })
         }
+    }
     </script>
 </body>
 

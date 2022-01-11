@@ -34,18 +34,21 @@
                     }
                     if($member['role'] == "technician"){
                         $settingProfile = '<a class="dropdown-item" href="profile.php?id='.$_SESSION['uid'].'">โปรไฟล์ฉัน</a><a class="dropdown-item" href="updateProfile.php">ตั่งค่าโปรไฟล์</a>';
-                    }else{
-                        $settingProfile = '<a class="dropdown-item" href="myPost.php">โพสต์ของฉัน</a>';
+                    }else if($member['role'] == "member"){
+                        $settingProfile = '<a class="dropdown-item" href="profile.php?id='.$_SESSION['uid'].'">โปรไฟล์ฉัน</a><a class="dropdown-item" href="updateProfile.php">ตั่งค่าโปรไฟล์</a><a class="dropdown-item" href="myPost.php">โพสต์ของฉัน</a> <a href="registerTech.php   " class="bg-warning dropdown-item"><i class="fas fa-toolbox"></i> สมัครเป็นช่าง</a>';
+                    }else if($member['role'] == "admin"){
+                        $settingProfile = '<a href="admin.php" class="bg-warning dropdown-item"><i class="fas fa-toolbox"></i>แอดมิน</a>';
                     }
                     echo'
                     <li class="nav-item">
+                       
                         <a href="chat.php" class="btn btn-primary text-white">
                             <i class="fas fa-comment"></i> Chat <span class="badge badge-danger">'.$getReqNav->rowCount().'</span>
                         </a>
                         </li>
                     <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <i class="fas fa-user"></i> สวัสดี '.$member['name'].'
+                                <i class="fas fa-user"></i> สวัสดี '.$member['name'].' (' .$member['role'].')
                             </a>
                             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                                 '.$settingProfile.'

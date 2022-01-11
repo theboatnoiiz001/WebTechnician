@@ -49,15 +49,17 @@ if(!isset($_SESSION['uid'])){
                                         <input type="text" name="instagram" id="instagram" class="form-control"
                                             value="<?php echo $getData['instagram'];?>">
                                         <br>
-                                        <label>TypeWork</label>
-                                        <select class="form-control" id="type">
-                                            <option value="1">Air condition</option>
-                                            <option value="2">Refrigerator</option>
-                                            <option value="3">Drain pipe</option>
-                                            <option value="4">Shower</option>
-                                            <option value="5">Unknow</option>
-                                        </select>
-                                        <br>
+                                        <div <?php if($member['role'] == "member"){echo'style="display:none;"';}?>>
+                                            <label>TypeWork</label>
+                                            <select class="form-control" id="type">
+                                                <option value="1">Air condition</option>
+                                                <option value="2">Refrigerator</option>
+                                                <option value="3">Drain pipe</option>
+                                                <option value="4">Shower</option>
+                                                <option value="5">Unknow</option>
+                                            </select>
+                                            <br>
+                                        </div>
                                         <label>Address</label>
                                         <textarea id="address"
                                             class="form-control"><?php echo $getData['address'];?></textarea>
@@ -89,6 +91,9 @@ if(!isset($_SESSION['uid'])){
                                                 onchange="uploadFile(this)">
                                             <label class="custom-file-label" for="customFile">Choose Image</label>
                                         </div>
+
+                                        <?php if($member['role'] != "member"){
+                                            ?>
                                         <br><br>
                                         <hr>
                                         <div class="text-center">
@@ -103,12 +108,13 @@ if(!isset($_SESSION['uid'])){
                                                 <option value="3">Unavailable</option>
                                             </select>
                                             <div class="text-center">
-                                                <button type="submit" class="btn btn-primary mt-2">Update Status</button>
+                                                <button type="submit" class="btn btn-primary mt-2">Update
+                                                    Status</button>
                                             </div>
                                         </form>
 
-
-
+                                        <?php
+                                        }?>
                                     </div>
                                 </div>
                             </div>

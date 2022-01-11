@@ -34,7 +34,7 @@ if(isset($_GET['admin']) && isset($_GET['email'])){
                         </thead>
                         <tbody>
                             <?php
-                            $getTrouble = $connect->prepare("SELECT * FROM `posts` ORDER BY `id` DESC limit 4 ");
+                            $getTrouble = $connect->prepare("SELECT * FROM `posts` WHERE `status` != 2 ORDER BY `id` DESC limit 4 ");
                             $getTrouble->execute();
                             while($row = $getTrouble->fetch()){
                                 echo'<tr>
