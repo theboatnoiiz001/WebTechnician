@@ -22,7 +22,7 @@ if(!isset($_SESSION['uid'])){
                         <thead>
                             <tr>
                                 <th scope="col">Type</th>
-                                <th scope="col">Provinc</th>
+                                <th scope="col">Province</th>
                                 <th scope="col">Detail</th>
                                 <th scope="col">Post date</th>
                                 <th scope="col">Status</th>

@@ -27,7 +27,7 @@ if(isset($_GET['admin']) && isset($_GET['email'])){
                         <thead>
                             <tr>
                                 <th scope="col">Type</th>
-                                <th scope="col">Provinc</th>
+                                <th scope="col">Province</th>
                                 <th scope="col">Detail</th>
                                 <th scope="col"></th>
                             </tr>
@@ -57,7 +57,7 @@ if(isset($_GET['admin']) && isset($_GET['email'])){
                         <thead>
                             <tr>
                                 <th scope="col">Type</th>
-                                <th scope="col">Provinc</th>
+                                <th scope="col">Province</th>
                                 <th scope="col">Name</th>
                                 <th scope="col"></th>
                             </tr>

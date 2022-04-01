@@ -81,7 +81,7 @@ include("template/header.php");
                         <thead>
                             <tr>
                                 <th scope="col">Type</th>
-                                <th scope="col">Provinc</th>
+                                <th scope="col">Province</th>
                                 <th scope="col">Topic</th>
                                 <th scope="col">Post date</th>
                                 <th scope="col">Price</th>
