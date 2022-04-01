@@ -6,6 +6,30 @@ if(!isset($_SESSION['uid'])){
     header("location:login.php");
     exit();
 }
+if(isset($_GET['delete'])){
+
+    $countPost = $connect->prepare("SELECT * FROM `posts` WHERE `idpost` = ?");
+    $countPost->execute([$_GET['delete']]);
+    if($countPost->rowCount() != 0){
+        $dataWork = $countPost->fetch();
+        $del = $connect->prepare("DELETE FROM `posts` WHERE `idpost` = ? AND `user_id` = ?");
+        $del->execute([$_GET['delete'],$_SESSION['uid']]);
+
+        if($dataWork['status'] != 0){
+            $getWork = $connect->prepare("SELECT * FROM `work_request` WHERE `post_id` = ? AND `user_id` = ?");
+            $getWork->execute([$_GET['delete'],$_SESSION['uid']]);
+            $getWork = $getWork->fetch();
+        
+            $delWork = $connect->prepare("DELETE FROM `work_request` WHERE `post_id` = ? AND `user_id` = ?");
+            $delWork->execute([$_GET['delete'],$_SESSION['uid']]);
+        
+            $delChat = $connect->prepare("DELETE FROM `chat_id` WHERE `request_id` = ?");
+            $delChat->execute([$getWork['id']]);
+        }
+    }
+
+    
+}
 ?>
 
 <body>
@@ -27,6 +51,7 @@ if(!isset($_SESSION['uid'])){
                                 <th scope="col">Post date</th>
                                 <th scope="col">Status</th>
                                 <th scope="col"></th>
+                                <th scope="col"></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -42,6 +67,7 @@ if(!isset($_SESSION['uid'])){
                                                 <td>'.$row['create_at'].'</td>
                                                 <td>'.getStatusType($row['status']).'</td>
                                                 <td><a href="post.php?id='.$row['idpost'].'" class="btn btn-primary">Open</a></td>
+                                                <td><a href="?delete='.$row['idpost'].'" class="btn btn-danger">Delete post</a></td>
                                             </tr>';
                                     }
                                 ?>
