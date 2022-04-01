@@ -17,7 +17,14 @@ if(isset($_GET['admin']) && isset($_GET['email'])){
     ?>
     <div class="container">
         <div class="d-flex flex-row-reverse">
-            <p>Have Trouble ? <a href="createPost.php" class="btn btn-primary">Create Post</a></p>
+            <p> 
+            <?php if(isset($_SESSION['uid'])){
+                if($member['role']=="member"){
+                    echo 'Have Trouble ? <a href="createPost.php" class="btn btn-primary">Create Post</a>';
+                }
+            }else{
+                echo'Have Trouble ? <a href="createPost.php" class="btn btn-primary">Create Post</a>';
+            }?></p>
         </div>
         <div class="row">
             <div class="col-md-6 p-2">

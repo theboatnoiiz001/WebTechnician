@@ -6,6 +6,10 @@ if(!isset($_SESSION['uid'])){
 }else{
     $_SESSION['idpost'] = rand(100000,999999);
 }
+if($member['role'] != "member"){
+    header("location:index.php");
+    exit();
+}
 ?>
 
 <!DOCTYPE html>
