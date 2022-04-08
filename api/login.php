@@ -6,7 +6,7 @@ if (!isset($_SESSION['uid'])) {
     if (isset($_POST['email'])) {
         if ($_POST['email'] != "" && $_POST['password'] != "") {
             $checkuser = $connect->prepare("SELECT `id` FROM `users` WHERE `email` = ? AND `password` = ?");
-            $checkuser->execute([$_POST['email'], $_POST['password']]);
+            $checkuser->execute([$_POST['email'], md5($_POST['password'])]);
             if ($checkuser->rowCount() != 0) {
                 $getData = $checkuser->fetch();
                 
